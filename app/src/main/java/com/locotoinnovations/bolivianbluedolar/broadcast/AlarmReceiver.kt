@@ -8,12 +8,13 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.locotoinnovations.bolivianbluedolar.R
 import com.locotoinnovations.bolivianbluedolar.network.DataResult
 import com.locotoinnovations.bolivianbluedolar.ui.screen.BinanceSearchRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,15 +33,16 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun retrievePricesAndSendNotification(context: Context) {
         // Use a CoroutineScope to collect Flow results
         val job = CoroutineScope(Dispatchers.IO).launch {
-            // Collect the buy price
-            val buyPriceResult = binanceSearchRepository.getBuyPrice().first()
-            val sellPriceResult = binanceSearchRepository.getSellPrice().first()
-
-            // Prepare notification content
-            val notificationContent = buildNotificationContent(buyPriceResult, sellPriceResult)
-
-            // Send the notification
-            sendNotification(context, notificationContent)
+            combine(
+                binanceSearchRepository.getBuyPrice(),
+                binanceSearchRepository.getSellPrice()
+            ) { buyPrice, sellPrice ->
+                // Build the notification content with the combined results
+                buildNotificationContent(buyPrice, sellPrice)
+            }.collect { notificationContent ->
+                // Send the notification
+                sendNotification(context, notificationContent)
+            }
         }
 
         job.invokeOnCompletion { throwable ->
@@ -56,14 +58,13 @@ class AlarmReceiver : BroadcastReceiver() {
         sellPriceResult: DataResult<Double>
     ): String {
         return buildString {
-            append("Prices:\n")
             when (buyPriceResult) {
-                is DataResult.Success -> append("Buy Price: ${buyPriceResult.data}\n")
-                is DataResult.Failure -> append("Buy Price Error: ${buyPriceResult}\n")
+                is DataResult.Success -> append("Precio compra: ${String.format(locale = null,"%.2f", buyPriceResult.data)}\n")
+                is DataResult.Failure -> append("Precio compra Error: ${buyPriceResult}\n")
             }
             when (sellPriceResult) {
-                is DataResult.Success -> append("Sell Price: ${sellPriceResult.data}\n")
-                is DataResult.Failure -> append("Sell Price Error: ${sellPriceResult}\n")
+                is DataResult.Success -> append("Precio venta: ${String.format(locale = null,"%.2f", sellPriceResult.data)}\n")
+                is DataResult.Failure -> append("Precio venta Error: ${sellPriceResult}\n")
             }
         }
     }
@@ -86,8 +87,8 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Daily Price Update")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Actualizacion de dolar blue Bolivia")
             .setContentText(content)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
