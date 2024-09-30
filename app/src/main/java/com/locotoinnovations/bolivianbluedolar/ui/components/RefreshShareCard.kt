@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -52,11 +53,12 @@ fun ActionButton(
 fun RefreshShareCard(
     modifier: Modifier = Modifier,
     shouldShowNotificationPermissionButton: Boolean,
-    onUpdateClick: () -> Unit,
-    onShareClick: () -> Unit,
+    onUpdateTapped: () -> Unit,
+    onShareTapped: () -> Unit,
     onReceiveNotificationClick: () -> Unit
 ) {
-    // Button Card
+    val scope = rememberCoroutineScope()
+
     Card(
         modifier = modifier
             .padding(16.dp)
@@ -78,7 +80,7 @@ fun RefreshShareCard(
                     icon = Icons.Default.Refresh,
                     contentDescription = "Refresh",
                     buttonText = "Actualizar Datos",
-                    onClick = onUpdateClick
+                    onClick = onUpdateTapped
                 )
 
                 // Button for sharing
@@ -89,7 +91,7 @@ fun RefreshShareCard(
                     icon = Icons.Default.Share,
                     contentDescription = "Share",
                     buttonText = "Compartir",
-                    onClick = onShareClick
+                    onClick = onShareTapped
                 )
             }
 
@@ -114,5 +116,11 @@ fun RefreshShareCard(
 @PreviewLightDark
 @Composable
 private fun previewRefreshShareCard() {
-    RefreshShareCard(modifier = Modifier, shouldShowNotificationPermissionButton = true, {}, {}, {})
+    RefreshShareCard(
+        modifier = Modifier,
+        shouldShowNotificationPermissionButton = true,
+        {},
+        {},
+        {}
+    )
 }

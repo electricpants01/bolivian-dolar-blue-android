@@ -19,7 +19,6 @@ class MainScreenViewModel @Inject constructor(
     val uiState: Flow<MainScreenState> = _uiState
 
     init {
-        println("chris before calling")
         fetchBuyPrice()
         fetchSellPrice()
     }
@@ -27,26 +26,46 @@ class MainScreenViewModel @Inject constructor(
     fun fetchBuyPrice() {
         binanceSearchRepository.getBuyPrice()
             .onEach { buyPrice ->
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    buyPrice = buyPrice
-                )
+                when (buyPrice) {
+                    is DataResult.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            buyPrice = buyPrice.data
+                        )
+                    }
+                    is DataResult.Failure -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            buyPrice = null
+                        )
+                    }
+                }
             }.launchIn(viewModelScope)
     }
 
     fun fetchSellPrice() {
         binanceSearchRepository.getSellPrice()
             .onEach { sellPrice ->
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    sellPrice = sellPrice
-                )
+                when (sellPrice) {
+                    is DataResult.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            sellPrice = sellPrice.data
+                        )
+                    }
+                    is DataResult.Failure -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            sellPrice = null
+                        )
+                    }
+                }
             }.launchIn(viewModelScope)
     }
 }
 
 data class MainScreenState(
     val isLoading: Boolean = true,
-    val buyPrice: DataResult<Double>? = null,
-    val sellPrice: DataResult<Double>? = null,
+    val buyPrice: Double? = null,
+    val sellPrice: Double? = null,
 )
