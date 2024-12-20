@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.locotoinnovations.bolivianbluedolar"
+    namespace = "com.locototeam.bolivianbluedolar"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.locotoinnovations.bolivianbluedolar"
+        applicationId = "com.locototeam.bolivianbluedolar"
         minSdk = 24
         targetSdk = 34
         versionCode = 4
