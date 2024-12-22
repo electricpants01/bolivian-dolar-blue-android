@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.locotoinnovations.core"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.compose.runtime)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -6,11 +6,12 @@ import com.locotoinnovations.core.room.operation.apitimestamp.ApiTimestampReposi
 import com.locotoinnovations.core.room.operation.apitimestamp.model.ApiTimestamp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 /**
  * Repository class to access [ApiTimestamp]
  */
-internal class ApiTimestampRepositoryImpl(
+internal class ApiTimestampRepositoryImpl @Inject constructor(
     private val apiTimestampDao: ApiTimestampDao,
 ) : ApiTimestampRepository {
 

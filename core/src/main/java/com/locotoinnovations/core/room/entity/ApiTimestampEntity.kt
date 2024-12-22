@@ -9,8 +9,6 @@ import java.util.Date
  * Entity that represents the last time a url has been successfully hit in order
  * to calculate the max age of a dataset.
  *
- * Despite [scope] being [EntityScope.Project], this doesn't mean that there will
- * be [EntityScope.Project.companyServerId] and [EntityScope.Project.projectServerId].
  * Rather, these values can be empty strings. This is done to make unique index work,
  * since it requires all parts to be non-null.
  */

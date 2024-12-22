@@ -8,13 +8,11 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.locotoinnovations.core.repository.BinanceSearchRepository
 import com.locototeam.bolivianbluedolar.R
-import com.locototeam.bolivianbluedolar.network.DataResult
-import com.locototeam.bolivianbluedolar.ui.screen.BinanceSearchRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,16 +31,8 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun retrievePricesAndSendNotification(context: Context) {
         // Use a CoroutineScope to collect Flow results
         val job = CoroutineScope(Dispatchers.IO).launch {
-            combine(
-                binanceSearchRepository.getBuyPrice(),
-                binanceSearchRepository.getSellPrice()
-            ) { buyPrice, sellPrice ->
-                // Build the notification content with the combined results
-                buildNotificationContent(buyPrice, sellPrice)
-            }.collect { notificationContent ->
-                // Send the notification
-                sendNotification(context, notificationContent)
-            }
+            val (buy , sell ) = binanceSearchRepository.fetchDolarBlueData(0)
+            buildNotificationContent(buy, sell)
         }
 
         job.invokeOnCompletion { throwable ->
@@ -54,18 +44,12 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun buildNotificationContent(
-        buyPriceResult: DataResult<Double>,
-        sellPriceResult: DataResult<Double>
+        buy: Double,
+        sell: Double,
     ): String {
         return buildString {
-            when (buyPriceResult) {
-                is DataResult.Success -> append("Precio compra: ${String.format(locale = null,"%.2f", buyPriceResult.data)}\n")
-                is DataResult.Failure -> append("Precio compra Error: ${buyPriceResult}\n")
-            }
-            when (sellPriceResult) {
-                is DataResult.Success -> append("Precio venta: ${String.format(locale = null,"%.2f", sellPriceResult.data)}\n")
-                is DataResult.Failure -> append("Precio venta Error: ${sellPriceResult}\n")
-            }
+            append("Precio compra: ${String.format(locale = null,"%.2f", buy)}\n")
+            append("Precio venta: ${String.format(locale = null,"%.2f", sell)}\n")
         }
     }
 

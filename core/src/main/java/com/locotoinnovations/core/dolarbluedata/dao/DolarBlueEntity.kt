@@ -8,12 +8,12 @@ import androidx.room.PrimaryKey
     tableName = DolarBlueEntity.TABLE_NAME,
 )
 data class DolarBlueEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = LOCAL_ID) val localId: Long,
     @ColumnInfo(name = "buy") val buy: Double,
     @ColumnInfo(name = "sell") val sell: Double,
-    val dolarBlue: Double,
 ) {
     companion object {
+        const val LOCAL_ID = "local_id"
         internal const val TABLE_NAME = "tb_dolar_blue"
     }
 }

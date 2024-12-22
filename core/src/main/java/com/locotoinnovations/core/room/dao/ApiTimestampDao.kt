@@ -44,8 +44,6 @@ abstract class ApiTimestampDao : UtilDao<ApiTimestampEntity> {
     )
     protected abstract suspend fun readLocalId(
         apiKey: String,
-        companyServerId: String?,
-        projectServerId: String?
     ): Long?
 
     @Query("DELETE FROM ApiTimestamp WHERE last_synced_timestamp < :date")
@@ -67,9 +65,4 @@ abstract class ApiTimestampDao : UtilDao<ApiTimestampEntity> {
     suspend fun upsert(timestampEntity: ApiTimestampEntity): Long {
         return insertOrIgnore(timestampEntity)
     }
-
-    private data class CompanyProjectIds(
-        val companyServerId: String?,
-        val projectServerId: String?,
-    )
 }

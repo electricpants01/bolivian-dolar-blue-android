@@ -39,7 +39,7 @@ class FetchDolarBlueDataOperation(
                 }
                 saveDolarBlueDataOperation.saveBuyData(buy, sell)
 
-                return DataResult.Success(Pair(buy, sell))
+                return DataResult.Success(data = Pair(buy, sell))
             }
         }.execute(maxAge)
     }

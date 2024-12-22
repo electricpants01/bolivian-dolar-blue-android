@@ -47,6 +47,10 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun providesApiTimestampDao(db: DolarBlueDatabase) = db.apiTimestampDao()
+
+    @Singleton
+    @Provides
     fun providesSaveDolarBlueDataOperation(dolarBlueDao: DolarBlueDao): SaveDolarBlueDataOperation {
         return SaveDolarBlueDataOperation(dolarBlueDao)
     }
