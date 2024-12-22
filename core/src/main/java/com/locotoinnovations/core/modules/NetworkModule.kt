@@ -1,7 +1,6 @@
-package com.locototeam.bolivianbluedolar.network
+package com.locotoinnovations.core.modules
 
 import com.locototeam.bolivianbluedolar.network.binance_search.BinanceSearchService
-import com.locototeam.bolivianbluedolar.ui.screen.BinanceSearchRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Network {
+object NetworkModule {
 
     private const val API_PROD = "https://p2p.binance.com/"
 
@@ -39,11 +38,5 @@ object Network {
     @Singleton
     fun providesBinanceSearchService(retrofit: Retrofit): BinanceSearchService {
         return retrofit.create(BinanceSearchService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun providesBinanceSearchRepository(todoService: BinanceSearchService): BinanceSearchRepository {
-        return BinanceSearchRepository(todoService)
     }
 }

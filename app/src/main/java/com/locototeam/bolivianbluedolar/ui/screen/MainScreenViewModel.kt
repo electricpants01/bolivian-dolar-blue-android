@@ -2,12 +2,12 @@ package com.locototeam.bolivianbluedolar.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.locototeam.bolivianbluedolar.network.DataResult
+import com.locotoinnovations.core.repository.BinanceSearchRepository
+import com.locotoinnovations.core.repository.DEFAULT_MAX_AGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,48 +19,23 @@ class MainScreenViewModel @Inject constructor(
     val uiState: Flow<MainScreenState> = _uiState
 
     init {
-        fetchBuyPrice()
-        fetchSellPrice()
+        viewModelScope.launch {
+            binanceSearchRepository.fetchDolarBlueData(DEFAULT_MAX_AGE)
+
+            binanceSearchRepository.readDolarBlueData().collect { (buyPrice, sellPrice) ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    buyPrice = buyPrice,
+                    sellPrice = sellPrice
+                )
+            }
+        }
     }
 
-    fun fetchBuyPrice() {
-        binanceSearchRepository.getBuyPrice()
-            .onEach { buyPrice ->
-                when (buyPrice) {
-                    is DataResult.Success -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            buyPrice = buyPrice.data
-                        )
-                    }
-                    is DataResult.Failure -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            buyPrice = null
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    fun fetchSellPrice() {
-        binanceSearchRepository.getSellPrice()
-            .onEach { sellPrice ->
-                when (sellPrice) {
-                    is DataResult.Success -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            sellPrice = sellPrice.data
-                        )
-                    }
-                    is DataResult.Failure -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            sellPrice = null
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
+    fun refreshData() {
+        viewModelScope.launch {
+            binanceSearchRepository.fetchDolarBlueData(0)
+        }
     }
 }
 
