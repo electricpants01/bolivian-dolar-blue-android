@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".BolivianBlueDolar"
@@ -29,6 +30,15 @@
             </intent-filter>
         </activity>
         <receiver android:name=".broadcast.AlarmReceiver" />
+        <!-- Initializers -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data  android:name="com.locototeam.bolivianbluedolar.initializer.NetworkConnectivityInitializer"
+                android:value="androidx.startup" />
+        </provider>
     </application>
 
 </manifest>

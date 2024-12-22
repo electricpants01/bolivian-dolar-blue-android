@@ -59,8 +59,7 @@ fun MainScreen(
                     shouldShowNotificationPermissionButton = shouldShowNotificationButton,
                     onUpdateTapped = {
                         coroutineScope.launch {
-                            mainScreenViewModel.fetchBuyPrice()
-                            mainScreenViewModel.fetchSellPrice()
+                            mainScreenViewModel.refreshData()
                             snackbarHostState.showSnackbar("Datos Actualizados")
                         }
                     },
