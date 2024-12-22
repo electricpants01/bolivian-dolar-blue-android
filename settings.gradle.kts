@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Bolivian Blue Dolar"
 include(":app")
- 
+include(":core")
