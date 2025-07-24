@@ -46,9 +46,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // MutableState for notification button visibility
-//    private lateinit var shouldShowNotificationButton: MutableState<Boolean>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,20 +54,6 @@ class MainActivity : ComponentActivity() {
             BolivianBlueDolarTheme {
                 snackbarHostState = remember { SnackbarHostState() }
                 scope = rememberCoroutineScope()
-
-                // Initialize the state for whether the notification button should be shown
-//                shouldShowNotificationButton = remember {
-//                    mutableStateOf(
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//                            ContextCompat.checkSelfPermission(
-//                                this, Manifest.permission.POST_NOTIFICATIONS
-//                            ) != PackageManager.PERMISSION_GRANTED
-//                        } else {
-//                            // Permission is not needed for versions lower than Android 13
-//                            false
-//                        }
-//                    )
-//                }
 
                 Scaffold(
                     snackbarHost = {

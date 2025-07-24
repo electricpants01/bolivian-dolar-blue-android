@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "com.locototeam.bolivianbluedolar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.locototeam.bolivianbluedolar"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 4
-        versionName = "1.0"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 7
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,7 +25,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

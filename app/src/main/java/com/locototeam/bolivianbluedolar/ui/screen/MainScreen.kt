@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -29,29 +31,37 @@ fun MainScreen(
     onRequestNotificationPermission: () -> Unit
 ) {
 
-    val uiState by mainScreenViewModel.uiState.collectAsStateWithLifecycle(initialValue = MainScreenState())
+    val mainScreenUiState by mainScreenViewModel.viewState.collectAsStateWithLifecycle()
+    val isLoading = mainScreenUiState.isLoading
+    var isInitiated = rememberSaveable { false }
     val coroutineScope = rememberCoroutineScope()
 
-    // Obtener el contexto dentro de la función composable
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        if (!isInitiated) {
+            mainScreenViewModel.handleEvent(MainScreenEvent.InitContent)
+        }
+        isInitiated = true
+    }
 
     Column(
         modifier = modifier,
     ) {
-        if (uiState.isLoading) {
+        if (isLoading) {
             Text(text = "Loading...")
         } else {
             Column {
                 Box(modifier = Modifier.weight(0.3f))
 
                 ExchangeRateCard(
-                    buyPrice = String.format(locale = null, "%.2f", uiState.buyPrice ?: 0.0),
-                    sellPrice = String.format(locale = null, "%.2f", uiState.sellPrice ?: 0.0),
+                    buyPrice = String.format(locale = null, "%.2f", mainScreenUiState.buyPrice ?: 0.0),
+                    sellPrice = String.format(locale = null, "%.2f", mainScreenUiState.sellPrice ?: 0.0),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                CurrencyConverterCard(sellPrice = uiState.sellPrice ?: 0.0)
+                CurrencyConverterCard(sellPrice = mainScreenUiState.sellPrice ?: 0.0)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -65,7 +75,7 @@ fun MainScreen(
                     },
                     onShareTapped = {
                         // Share the buy and sell prices
-                        val shareText = "Buy Price: ${uiState.buyPrice ?: 0.0}, Sell Price: ${uiState.sellPrice ?: 0.0}"
+                        val shareText = "Buy Price: ${mainScreenUiState.buyPrice ?: 0.0}, Sell Price: ${mainScreenUiState.sellPrice ?: 0.0}"
                         val sendIntent = Intent().apply {
                             action = Intent.ACTION_SEND
                             putExtra(Intent.EXTRA_TEXT, shareText)

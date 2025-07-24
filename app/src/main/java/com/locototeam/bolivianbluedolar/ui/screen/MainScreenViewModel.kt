@@ -2,32 +2,41 @@ package com.locototeam.bolivianbluedolar.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.locotoinnovations.core.arch.DolarBlueScaffold
+import com.locotoinnovations.core.arch.dolarBlueScaffold
 import com.locotoinnovations.core.repository.BinanceSearchRepository
 import com.locotoinnovations.core.repository.DEFAULT_MAX_AGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val binanceSearchRepository: BinanceSearchRepository,
-): ViewModel() {
+): ViewModel(), DolarBlueScaffold<MainScreenState, MainScreenEvent, MainScreenSideEffect> by dolarBlueScaffold(
+    initialState = MainScreenState()
+){
 
-    private val _uiState = MutableStateFlow(MainScreenState())
-    val uiState: Flow<MainScreenState> = _uiState
+    override fun handleEvent(event: MainScreenEvent) {
+        when(event) {
+            is MainScreenEvent.InitContent -> initContent()
+            is MainScreenEvent.RefreshData -> refreshData()
+        }
+    }
 
-    init {
+    private fun initContent() {
         viewModelScope.launch {
             binanceSearchRepository.fetchDolarBlueData(DEFAULT_MAX_AGE)
 
             binanceSearchRepository.readDolarBlueData().collect { (buyPrice, sellPrice) ->
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    buyPrice = buyPrice,
-                    sellPrice = sellPrice
-                )
+                updateViewState {
+                    it.copy(
+                        isLoading = false,
+                        buyPrice = buyPrice,
+                        sellPrice = sellPrice
+
+                    )
+                }
             }
         }
     }
@@ -39,8 +48,17 @@ class MainScreenViewModel @Inject constructor(
     }
 }
 
-data class MainScreenState(
+internal data class MainScreenState(
     val isLoading: Boolean = true,
     val buyPrice: Double? = null,
     val sellPrice: Double? = null,
 )
+
+interface MainScreenEvent {
+    data object InitContent: MainScreenEvent
+    data object RefreshData: MainScreenEvent
+}
+
+internal interface MainScreenSideEffect {
+
+}
