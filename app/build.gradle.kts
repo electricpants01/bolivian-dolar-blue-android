@@ -14,7 +14,7 @@ android {
         applicationId = "com.locototeam.bolivianbluedolar"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
+        versionCode = 6
         versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -25,7 +25,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
