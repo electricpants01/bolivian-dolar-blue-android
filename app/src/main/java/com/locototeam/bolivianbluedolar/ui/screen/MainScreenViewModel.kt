@@ -19,8 +19,8 @@ class MainScreenViewModel @Inject constructor(
 
     override fun handleEvent(event: MainScreenEvent) {
         when(event) {
-            is MainScreenEvent.initContent -> initContent()
-            is MainScreenEvent.refreshData -> refreshData()
+            is MainScreenEvent.InitContent -> initContent()
+            is MainScreenEvent.RefreshData -> refreshData()
         }
     }
 
@@ -55,8 +55,8 @@ internal data class MainScreenState(
 )
 
 interface MainScreenEvent {
-    data object initContent: MainScreenEvent
-    data object refreshData: MainScreenEvent
+    data object InitContent: MainScreenEvent
+    data object RefreshData: MainScreenEvent
 }
 
 internal interface MainScreenSideEffect {

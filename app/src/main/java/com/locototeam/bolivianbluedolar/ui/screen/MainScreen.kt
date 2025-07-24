@@ -36,12 +36,11 @@ fun MainScreen(
     var isInitiated = rememberSaveable { false }
     val coroutineScope = rememberCoroutineScope()
 
-    // Obtener el contexto dentro de la función composable
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (!isInitiated) {
-            mainScreenViewModel.handleEvent(MainScreenEvent.initContent)
+            mainScreenViewModel.handleEvent(MainScreenEvent.InitContent)
         }
         isInitiated = true
     }
